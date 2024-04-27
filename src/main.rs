@@ -1,8 +1,12 @@
 use bevy::prelude::*;
+use demos::sprite::SpriteDemoPlugin;
+
+mod demos;
 
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
+        .add_plugins(SpriteDemoPlugin)
         .add_systems(Startup, setup)
         .run();
 }
