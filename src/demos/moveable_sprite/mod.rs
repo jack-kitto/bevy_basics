@@ -2,7 +2,6 @@ use bevy::prelude::*;
 use bevy::{
     app::{App, Plugin, Startup},
     asset::AssetServer,
-    core_pipeline::core_2d::Camera2dBundle,
     ecs::system::{Commands, Res},
     sprite::SpriteBundle,
 };
@@ -19,7 +18,6 @@ impl Plugin for MovableSpriteDemoPlugin {
 }
 
 fn sprite_demo(mut commands: Commands, asset_server: Res<AssetServer>) {
-    commands.spawn(Camera2dBundle::default());
     commands.spawn((
         Player,
         SpriteBundle {
