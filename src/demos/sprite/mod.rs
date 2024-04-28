@@ -11,12 +11,16 @@ pub struct SpriteDemoPlugin;
 
 impl Plugin for SpriteDemoPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, sprite_demo);
+        app.add_systems(Startup, setup);
     }
 }
 
-fn sprite_demo(mut commands: Commands, asset_server: Res<AssetServer>) {
-    commands.spawn(Camera2dBundle::default());
+fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
+    let mut camera = Camera2dBundle::default();
+    camera.projection.scale = 1.;
+    camera.transform.translation.x += 1280.0 / 4.0;
+    camera.transform.translation.y += 720.0 / 4.0;
+    commands.spawn(camera);
     commands.spawn(SpriteBundle {
         texture: asset_server.load("SpriteDemo.png"),
         ..default()

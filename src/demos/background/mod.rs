@@ -1,10 +1,10 @@
 use bevy::prelude::*;
-use bevy::window::WindowResized;
 use bevy::{
     app::{App, Plugin, Startup},
     asset::AssetServer,
     ecs::system::{Commands, Res},
 };
+use bevy_ecs_ldtk::prelude::*;
 
 pub struct BackgroundPlugin;
 #[derive(Component)]
@@ -12,42 +12,23 @@ struct Background;
 
 impl Plugin for BackgroundPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, setup)
-            .add_systems(Update, (on_resize_system));
+        app.add_systems(Startup, setup);
     }
 }
-
-fn setup(
-    mut commands: Commands,
-    asset_server: Res<AssetServer>,
-    windows: Query<&mut Window>,
-    resize_event: Res<Events<WindowResized>>,
-) {
-    let window = windows.single();
-    let width = window.resolution.width();
-    let height = window.resolution.height();
-    commands.spawn((
-        Background,
-        SpriteBundle {
-            sprite: Sprite {
-                custom_size: Some(Vec2::new(width, height)),
-                ..default()
-            },
-            texture: asset_server.load("background.png"),
-            ..default()
-        },
-    ));
-}
-
-fn on_resize_system(
-    mut resize_reader: EventReader<WindowResized>,
-    mut query: Query<&mut Transform, With<Background>>,
-) {
-    for e in resize_reader.read() {
-        // When resolution is being changed
-        // text.sections[0].value = format!("{:.1} x {:.1}", e.width, e.height);
-        let width = e.width;
-        let height = e.height;
-        let mut background = query.single_mut();
-    }
+fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
+    let mut camera = Camera2dBundle::default();
+    let scale = 0.23;
+    let window_width = 1080.0;
+    let window_height = 720.0;
+    let denominator = 2. / scale;
+    let translation_x = window_width / denominator;
+    let translation_y = window_height / denominator;
+    camera.projection.scale = scale;
+    camera.transform.translation.x += translation_x;
+    camera.transform.translation.y += translation_y;
+    commands.spawn(camera);
+    commands.spawn(LdtkWorldBundle {
+        ldtk_handle: asset_server.load("bevy-basics.ldtk"),
+        ..Default::default()
+    });
 }
